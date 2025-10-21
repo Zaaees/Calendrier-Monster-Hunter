@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier du Vieux Monde - Monster Hunter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Trebuchet MS', 'Palatino Linotype', serif;
+            background: #1a1410;
+            background-image: 
+                radial-gradient(ellipse at top, rgba(139, 69, 19, 0.15), transparent),
+                radial-gradient(ellipse at bottom, rgba(34, 34, 34, 0.2), transparent);
+            padding: 20px;
+            color: #2c2416;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.03) 2px,
+                    rgba(0, 0, 0, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #e8dcc8 0%, #d4c4a8 100%);
+            border-radius: 0;
+            box-shadow: 
+                0 0 0 3px #3d2817,
+                0 0 0 6px #8b6f47,
+                0 0 0 9px #3d2817,
+                0 15px 50px rgba(0,0,0,0.6),
+                inset 0 0 100px rgba(101, 67, 33, 0.1);
+            padding: 50px;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #5d4a3a;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(101, 67, 33, 0.03) 50px,
+                    rgba(101, 67, 33, 0.03) 51px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(101, 67, 33, 0.03) 50px,
+                    rgba(101, 67, 33, 0.03) 51px
+                );
+            pointer-events: none;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 4px solid #3d2817;
+            padding-bottom: 30px;
+            position: relative;
+        }
+        
+        header::after {
+            content: '⚔';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #e8dcc8 0%, #d4c4a8 100%);
+            padding: 5px 20px;
+            font-size: 1.5em;
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            color: #3d2817;
+            text-shadow: 
+                2px 2px 0px #8b6f47,
+                4px 4px 8px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Georgia', serif;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #654321;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4ba 100%);
+            border: 3px solid #3d2817;
+            border-left: 8px solid #8b4513;
+            padding: 25px;
+            margin-bottom: 35px;
+            border-radius: 0;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.3),
+                inset 0 0 30px rgba(139, 69, 19, 0.1);
+            position: relative;
+        }
+        
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, 
+                #8b6f47 0%, 
+                transparent 5%, 
+                transparent 95%, 
+                #8b6f47 100%);
+            z-index: -1;
+        }
+        
+        .info-box h2 {
+            color: #3d2817;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #8b6f47;
+            padding-bottom: 10px;
+        }
+        
+        .year-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #2d1f14 0%, #4a3728 100%);
+            padding: 20px;
+            border-radius: 0;
+            text-align: center;
+            box-shadow: 
+                0 0 0 2px #8b6f47,
+                0 4px 12px rgba(0,0,0,0.4),
+                inset 0 0 20px rgba(0,0,0,0.3);
+            border: 1px solid #654321;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(139, 111, 71, 0.05) 10px,
+                rgba(139, 111, 71, 0.05) 20px
+            );
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #d4af37;
+            text-shadow: 
+                0 0 10px rgba(212, 175, 55, 0.5),
+                2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .stat-label {
+            color: #c9b896;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+            position: relative;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .month-card {
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4ba 100%);
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 
+                0 0 0 3px #3d2817,
+                0 6px 20px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid #654321;
+            position: relative;
+        }
+        
+        .month-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: repeating-linear-gradient(
+                90deg,
+                #8b6f47,
+                #8b6f47 10px,
+                #654321 10px,
+                #654321 20px
+            );
+        }
+        
+        .month-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 0 0 3px #3d2817,
+                0 12px 30px rgba(0,0,0,0.5);
+        }
+        
+        .month-header {
+            padding: 25px;
+            color: white;
+            font-size: 1.6em;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .month-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .spring { 
+            background: linear-gradient(135deg, #4a7c59 0%, #6b9d5f 100%);
+            box-shadow: inset 0 -3px 10px rgba(0,0,0,0.3);
+        }
+        .summer { 
+            background: linear-gradient(135deg, #c45d2e 0%, #e8833a 100%);
+            box-shadow: inset 0 -3px 10px rgba(0,0,0,0.3);
+        }
+        .autumn { 
+            background: linear-gradient(135deg, #a0551c 0%, #c97432 100%);
+            box-shadow: inset 0 -3px 10px rgba(0,0,0,0.3);
+        }
+        .winter { 
+            background: linear-gradient(135deg, #3d5a73 0%, #4a6d8a 100%);
+            box-shadow: inset 0 -3px 10px rgba(0,0,0,0.3);
+        }
+        
+        .month-body {
+            padding: 25px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+        }
+        
+        .month-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed #c9b896;
+            align-items: center;
+        }
+        
+        .days-count {
+            font-size: 1.3em;
+            color: #3d2817;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+        }
+        
+        .holiday {
+            background: linear-gradient(135deg, #fff8e7 0%, #f5e6d3 100%);
+            padding: 15px;
+            border-radius: 0;
+            border-left: 5px solid #8b4513;
+            border-right: 1px solid #c9b896;
+            border-top: 1px solid #c9b896;
+            border-bottom: 1px solid #c9b896;
+            margin-bottom: 12px;
+            box-shadow: 
+                0 2px 6px rgba(0,0,0,0.2),
+                inset 0 0 15px rgba(139, 69, 19, 0.05);
+        }
+        
+        .holiday-name {
+            font-weight: bold;
+            color: #3d2817;
+            margin-bottom: 6px;
+            font-size: 1.05em;
+        }
+        
+        .holiday-date {
+            color: #654321;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
+        .weekdays {
+            background: linear-gradient(135deg, #2d1f14 0%, #4a3728 100%);
+            padding: 30px;
+            border-radius: 0;
+            margin-bottom: 35px;
+            box-shadow: 
+                0 0 0 3px #8b6f47,
+                0 6px 20px rgba(0,0,0,0.4),
+                inset 0 0 30px rgba(0,0,0,0.3);
+            border: 2px solid #654321;
+        }
+        
+        .weekdays h2 {
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        
+        .days-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .day-item {
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4ba 100%);
+            padding: 12px 20px;
+            border-radius: 0;
+            font-weight: bold;
+            color: #3d2817;
+            border: 2px solid #654321;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        .seasons-section {
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4ba 100%);
+            padding: 35px;
+            border-radius: 0;
+            margin-bottom: 35px;
+            box-shadow: 
+                0 0 0 3px #3d2817,
+                0 6px 20px rgba(0,0,0,0.4);
+            border: 2px solid #654321;
+            position: relative;
+        }
+        
+        .seasons-section::before {
+            content: '❄ 🌸 ☀ 🍂';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #e8dcc8 0%, #d4c4a8 100%);
+            padding: 5px 25px;
+            border: 2px solid #3d2817;
+            font-size: 1.2em;
+        }
+        
+        .seasons-section h2 {
+            color: #3d2817;
+            margin-bottom: 25px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0 #c9b896;
+        }
+        
+        .season-info {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff8e7 0%, #f5e6d3 100%);
+            border-radius: 0;
+            border-left: 6px solid #8b4513;
+            border-right: 2px solid #c9b896;
+            box-shadow: 
+                0 3px 10px rgba(0,0,0,0.2),
+                inset 0 0 20px rgba(139, 69, 19, 0.05);
+        }
+        
+        .season-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #3d2817;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #c9b896;
+            padding-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 3px double #3d2817;
+            color: #654321;
+            font-style: italic;
+        }
+        
+        footer p {
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            .month-header {
+                font-size: 1.3em;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            body::before {
+                display: none;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .month-card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📅 Calendrier du Vieux Monde</h1>
+            <p class="subtitle">Univers de Monster Hunter</p>
+        </header>
+        
+        <div class="info-box">
+            <h2>À propos du calendrier</h2>
+            <p>Le calendrier du Vieux Monde compte <strong>295 jours</strong> répartis sur <strong>10 mois</strong>. Chaque semaine comprend 7 jours, et les journées durent 24 heures standard.</p>
+        </div>
+        
+        <div class="year-summary">
+            <div class="stat-card">
+                <div class="stat-number">295</div>
+                <div class="stat-label">Jours par an</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Mois</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Saisons</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">7</div>
+                <div class="stat-label">Jours/Semaine</div>
+            </div>
+        </div>
+        
+        <div class="weekdays">
+            <h2>🗓️ Les 7 jours de la semaine</h2>
+            <div class="days-list">
+                <div class="day-item">Jour de Lune (Lundi)</div>
+                <div class="day-item">Jour de la Tour (Mardi)</div>
+                <div class="day-item">Jour du Vent (Mercredi)</div>
+                <div class="day-item">Jour Thaumique (Jeudi)</div>
+                <div class="day-item">Jour du Feu (Vendredi)</div>
+                <div class="day-item">Jour de l'Épée (Samedi)</div>
+                <div class="day-item">Jour du Soleil (Dimanche)</div>
+            </div>
+        </div>
+        
+        <h2 style="text-align: center; color: #4a2511; margin-bottom: 30px; font-size: 2em;">Les 10 Mois de l'Année</h2>
+        
+        <div class="calendar-grid">
+            <!-- PRINTEMPS -->
+            <div class="month-card">
+                <div class="month-header spring">
+                    🌸 Mois de la Pluie
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">28 jours</span>
+                        <span style="color: #56ab2f; font-weight: bold;">🌱 PRINTEMPS</span>
+                    </div>
+                    <div class="holiday">
+                        <div class="holiday-name">🏛️ Jour des Fondateurs</div>
+                        <div class="holiday-date">1er Mois de la Pluie</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Début de l'année calendaire. Commémore la fondation de Dundorma et de la Guilde des Chasseurs.</p>
+                </div>
+            </div>
+            
+            <div class="month-card">
+                <div class="month-header spring">
+                    🌺 Mois de la Floraison
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">29 jours</span>
+                        <span style="color: #56ab2f; font-weight: bold;">🌱 PRINTEMPS</span>
+                    </div>
+                    <div class="holiday">
+                        <div class="holiday-name">🌸 Festival de Floraison Printanière</div>
+                        <div class="holiday-date">10 Mois de la Floraison</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Début officiel du printemps. Festival célébrant le renouveau de la nature.</p>
+                </div>
+            </div>
+            
+            <div class="month-card">
+                <div class="month-header spring">
+                    🏹 Mois de l'Arche
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">30 jours</span>
+                        <span style="color: #56ab2f; font-weight: bold;">🌱 PRINTEMPS</span>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Mois du printemps, propice aux chasses et explorations.</p>
+                </div>
+            </div>
+            
+            <!-- ÉTÉ -->
+            <div class="month-card">
+                <div class="month-header summer">
+                    ⚔️ Mois de la Faucille
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">30 jours</span>
+                        <span style="color: #f46b45; font-weight: bold;">☀️ ÉTÉ</span>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Début officiel de l'été vers le 13 Mois de la Faucille.</p>
+                </div>
+            </div>
+            
+            <div class="month-card">
+                <div class="month-header summer">
+                    🌅 Mois du Crépuscule
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">28 jours</span>
+                        <span style="color: #f46b45; font-weight: bold;">☀️ ÉTÉ</span>
+                    </div>
+                    <div class="holiday">
+                        <div class="holiday-name">🌙 Festival du Crépuscule d'Été</div>
+                        <div class="holiday-date">Date variable (semaine 2-3)</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Solstice d'été. Festival célébrant le jour le plus long et la nuit la plus courte.</p>
+                </div>
+            </div>
+            
+            <div class="month-card">
+                <div class="month-header summer">
+                    🌫️ Mois Gris
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">30 jours</span>
+                        <span style="color: #f46b45; font-weight: bold;">☀️ ÉTÉ</span>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Fin de l'été. Transition vers l'automne en deuxième semaine.</p>
+                </div>
+            </div>
+            
+            <!-- AUTOMNE -->
+            <div class="month-card">
+                <div class="month-header autumn">
+                    🍂 Mois du Tesson
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">31 jours</span>
+                        <span style="color: #d66d00; font-weight: bold;">🍁 AUTOMNE</span>
+                    </div>
+                    <div class="holiday">
+                        <div class="holiday-name">🎃 Festival des Récoltes d'Automne</div>
+                        <div class="holiday-date">18 Mois du Tesson</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Festival célébrant les récoltes et l'abondance. Préparatifs pour l'hiver.</p>
+                </div>
+            </div>
+            
+            <div class="month-card">
+                <div class="month-header autumn">
+                    🏔️ Mois de la Vallée
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">28 jours</span>
+                        <span style="color: #d66d00; font-weight: bold;">🍁 AUTOMNE</span>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Mois d'automne. Les jours raccourcissent considérablement.</p>
+                </div>
+            </div>
+            
+            <!-- HIVER -->
+            <div class="month-card">
+                <div class="month-header winter">
+                    🏠 Mois du Refuge
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">30 jours</span>
+                        <span style="color: #4b79a1; font-weight: bold;">❄️ HIVER</span>
+                    </div>
+                    <div class="holiday">
+                        <div class="holiday-name">🙏 Festival d'Appréciation</div>
+                        <div class="holiday-date">4 Mois du Refuge</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Début de l'hiver. Festival honorant les morts et les ancêtres.</p>
+                </div>
+            </div>
+            
+            <div class="month-card">
+                <div class="month-header winter">
+                    ⭐ Mois de l'Aube
+                </div>
+                <div class="month-body">
+                    <div class="month-info">
+                        <span class="days-count">31 jours</span>
+                        <span style="color: #4b79a1; font-weight: bold;">❄️ HIVER</span>
+                    </div>
+                    <div class="holiday">
+                        <div class="holiday-name">⭐ Festival de l'Étoile d'Hiver</div>
+                        <div class="holiday-date">Date du solstice d'hiver</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #666;">Dernier mois de l'année. Festival célébrant le solstice d'hiver quand l'étoile saphir brille.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="seasons-section">
+            <h2>🌍 Les Quatre Saisons</h2>
+            
+            <div class="season-info">
+                <div class="season-title">🌱 Printemps</div>
+                <p><strong>Mois :</strong> Mois de la Pluie, Mois de la Floraison, Mois de l'Arche</p>
+                <p><strong>Début officiel :</strong> 10 Mois de la Floraison - Festival de Floraison Printanière</p>
+                <p>Saison du renouveau et de la renaissance de la nature. Les artistes créent des sculptures florales, les druides célèbrent, et les nouveaux chasseurs commencent leur carrière.</p>
+            </div>
+            
+            <div class="season-info">
+                <div class="season-title">☀️ Été</div>
+                <p><strong>Mois :</strong> Mois de la Faucille, Mois du Crépuscule, Mois Gris</p>
+                <p><strong>Début officiel :</strong> ~13 Mois de la Faucille - Solstice d'été</p>
+                <p>Saison chaude célébrant le jour le plus long. Le Festival du Crépuscule d'Été est marqué par danses, festins et musique jusqu'à l'aube. Le légendaire Bal du Crépuscule à Dundorma est particulièrement célèbre.</p>
+            </div>
+            
+            <div class="season-info">
+                <div class="season-title">🍁 Automne</div>
+                <p><strong>Mois :</strong> Mois du Tesson, Mois de la Vallée</p>
+                <p><strong>Début :</strong> Deuxième semaine du Mois Gris</p>
+                <p>Saison de transition où les jours raccourcissent. Le Festival des Récoltes célèbre l'abondance avec concours, compétitions et préparatifs pour l'hiver. Traditions de farces et d'échange de friandises.</p>
+            </div>
+            
+            <div class="season-info">
+                <div class="season-title">❄️ Hiver</div>
+                <p><strong>Mois :</strong> Mois du Refuge, Mois de l'Aube</p>
+                <p><strong>Début officiel :</strong> 4 Mois du Refuge - Festival d'Appréciation</p>
+                <p>Saison froide marquant l'arrivée de l'hiver. Le Festival d'Appréciation honore les morts et les ancêtres. Le Festival de l'Étoile d'Hiver célèbre le solstice avec des bonhommes de neige et des rassemblements communautaires.</p>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h2>🎯 Événements spéciaux du Festival des Récoltes</h2>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Rixe des Récoltes :</strong> Combats contre des monstres capturés organisés par la Guilde des Chasseurs</li>
+                <li><strong>Compétition de Tir à l'Arc :</strong> Les participants doivent abattre 10 bouteilles d'alcool de feu uniquement avec des tirs chargés</li>
+                <li><strong>Défi des Coquins :</strong> Groupe de quatre chasseurs qui doivent résoudre une énigme créée par le MJ</li>
+            </ul>
+        </div>
+        
+        <footer style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #8b4513; color: #6b4423;">
+            <p><em>Calendrier du Vieux Monde - Univers Monster Hunter</em></p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Adapté pour campagne de jeu de rôle</p>
+        </footer>
+    </div>
+</body>
+</html>
